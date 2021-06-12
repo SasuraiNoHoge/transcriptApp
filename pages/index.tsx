@@ -5,18 +5,11 @@ import SpeechRecognition, {
 } from 'react-speech-recognition'
 
 let transcripts: string[] = []
+let reverse_array: string[] = []
 
 const Home: React.FC = () => {
   const { transcript, listening } = useSpeechRecognition()
   const [max_text_num, setMaxTextNum] = useState(20)
-
-  const startRecog = () => {
-    SpeechRecognition.startListening()
-  }
-
-  const stopRecog = () => {
-    SpeechRecognition.stopListening()
-  }
 
   useEffect(() => {
     if (transcript.length > 0) {
@@ -26,7 +19,8 @@ const Home: React.FC = () => {
         transcripts.shift()
       }
       transcripts.push(text)
-      console.log(transcripts)
+      reverse_array = transcripts.concat()
+      reverse_array.reverse()
     }
     if (!listening) {
       SpeechRecognition.startListening()
@@ -60,14 +54,14 @@ const Home: React.FC = () => {
         />
       </div>
       <>
-        {transcripts.map((text, index) => {
+        {reverse_array.map((text, index) => {
           return (
             <div key={index} className="flex mt-4 mx-4 border shadow-lg">
               <p className="mx-4 my-4 py-2 px-4 copy">{text}</p>
               <button
                 onClick={(e) => {
                   navigator.clipboard
-                    .writeText(transcripts[index])
+                    .writeText(reverse_array[index])
                     .then((e) => {
                       alert('コピーしました')
                     })
